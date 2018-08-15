@@ -21,11 +21,7 @@ android {
     productFlavors {
     }
     sourceSets { main { jni.srcDirs = ['src/main/jni', 'src/main/jniLibs/'] } }
-    externalNativeBuild {
-        ndkBuild {
-            path '../../../opencv-3.4.2-android-sdk/OpenCV-android-sdk/sdk/native/jni/OpenCV.mk'
-        }
-    }
+
 }
 
 dependencies {

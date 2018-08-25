@@ -7,7 +7,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -101,6 +103,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                         else {
 
                             Toast.makeText(v.getContext(),"Limit reached",Toast.LENGTH_LONG).show();
+                            (new showDialog()).execute();
                         }
 
                     }
@@ -393,6 +396,35 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         protected void onPostExecute(Bitmap croppedBitmap) {
             super.onPostExecute(croppedBitmap);
             previewImage.setImageBitmap(croppedBitmap);
+        }
+    }
+
+    public class showDialog extends AsyncTask<Void,Void,Void>
+    {
+        ProgressDialog p;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            p=new ProgressDialog(CameraActivity.this);
+            p.setMessage("Stitching...");
+            p.setCancelable(false);
+            p.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if(p.isShowing())
+                p.dismiss();
+
+            Intent i= new Intent(CameraActivity.this,PanaromaViewActivity.class);
+            startActivity(i);
         }
     }
 }

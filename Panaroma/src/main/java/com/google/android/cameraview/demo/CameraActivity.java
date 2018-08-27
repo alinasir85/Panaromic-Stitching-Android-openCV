@@ -16,6 +16,8 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,24 +41,32 @@ import android.widget.Toast;
 import com.google.android.cameraview.AspectRatio;
 import com.google.android.cameraview.CameraView;
 
+import org.opencv.android.Utils;
+import org.opencv.core.Mat;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 public class CameraActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback,
         AspectRatioFragment.Listener {
+    static {
+        System.loadLibrary("MyLibs");
+    }
+    //Bitmap panoramaBitmap;
 
     private static final String TAG = "CameraActivity";
     private ImageView previewImage;
-    int Pics=3;
+    int Pics=2;
     int count=0;
     int flag=0;
     //SharedPreferences preferences = getSharedPreferences("MyPrefsFile",MODE_PRIVATE);
-
-
     private static final int REQUEST_CAMERA_PERMISSION = 1;
 
     private static final String FRAGMENT_DIALOG = "dialog";
@@ -103,6 +113,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                         else {
 
                             Toast.makeText(v.getContext(),"Limit reached",Toast.LENGTH_LONG).show();
+                          //  stitchImages();
                             (new showDialog()).execute();
                         }
 
@@ -125,7 +136,6 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         {
             Pics= Integer.parseInt(name);
         }
-
         if (mCameraView != null) {
             mCameraView.addCallback(mCallback);
         }
@@ -399,7 +409,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         }
     }
 
-    public class showDialog extends AsyncTask<Void,Void,Void>
+    public class showDialog extends AsyncTask<Void,Void,Bitmap>
     {
         ProgressDialog p;
 
@@ -409,22 +419,118 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
             p=new ProgressDialog(CameraActivity.this);
             p.setMessage("Stitching...");
             p.setCancelable(false);
-            p.show();
+           // p.show();
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            return null;
+        protected Bitmap doInBackground(Void... voids) {
+             return  stitchImages();
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Bitmap panorama) {
+            super.onPostExecute(panorama);
             if(p.isShowing())
                 p.dismiss();
+            if(panorama==null) {
+                Toast.makeText(getApplicationContext(),"ERROR IN STITCHING",Toast.LENGTH_SHORT).show();
+            }
+            else
+             SaveImage(panorama);
 
-            Intent i= new Intent(CameraActivity.this,PanaromaViewActivity.class);
-            startActivity(i);
+
+           // startActivity(i);
         }
+    }
+
+
+    private void SaveImage(Bitmap finalBitmap) {
+
+        final Random ran= new Random();
+
+
+
+
+        String root = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES).toString();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+        Random generator = new Random();
+
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-Test"+ n +".jpg";
+                File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        "Test"+ran.nextInt()+".jpg");
+        if (file.exists ()) file.delete ();
+        try {
+            OutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            // sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+            //     Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+// Tell the media scanner about the new file so that it is
+// immediately available to the user.
+        MediaScannerConnection.scanFile(this, new String[]{file.toString()}, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                        Log.i("ExternalStorage", "-> uri=" + uri);
+                    }
+                });
+    }
+    public Bitmap stitchImages()
+    {
+        //return type will indicate the status about stitching
+        /*SharedPreferences preferences = getSharedPreferences("MyPrefsFile",MODE_PRIVATE);
+        String imageFilePath = preferences.getString("image1", "");
+        if(imageFilePath!="") {
+//            Toast.makeText(getApplicationContext(),"PIC Found",Toast.LENGTH_SHORT).show();
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
+     //       return bitmap;
+        }
+       // Toast.makeText(getApplicationContext(),"PIC NOT Found",Toast.LENGTH_SHORT).show();
+*/
+
+        List<Mat> imagesList = new ArrayList<>();
+        //default
+        int noOfImages=Pics;
+        SharedPreferences p = getSharedPreferences("MyPrefsFile",MODE_PRIVATE);
+        String name = p.getString("ImageCount", "");
+        if(!name.equalsIgnoreCase(""))
+        {
+            noOfImages = Integer.parseInt(name);
+        }
+        Bitmap imgBitmap=null;
+        for(int i=0;i<noOfImages;i++) {
+            String imageFilePath = p.getString("image"+(i+1), "");
+            if(imageFilePath!="") {
+               imgBitmap = BitmapFactory.decodeFile(imageFilePath);
+///               SaveImage(imgBitmap);
+            }
+
+            Mat imgMat = new Mat();
+            Utils.bitmapToMat(imgBitmap, imgMat);
+
+            imagesList.add(imgMat);
+        }
+     long[] matAdrsForJNI = new long[noOfImages];
+        for (int i=0;i<noOfImages;i++){
+            matAdrsForJNI[i]=  imagesList.get(i).getNativeObjAddr();
+        }
+        Mat panoramaMat= new Mat();
+        int ret = OpenCVStitchImages.stichImages(matAdrsForJNI, panoramaMat.getNativeObjAddr());
+       if(ret==0)
+       {
+           return null;
+       }
+        Bitmap panoramaBitmap=Bitmap.createBitmap(panoramaMat.cols(),  panoramaMat.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(panoramaMat, panoramaBitmap);
+        return panoramaBitmap;
     }
 }

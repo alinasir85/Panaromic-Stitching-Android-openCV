@@ -3,9 +3,13 @@
 <manifest package="com.google.android.cameraview.demo"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18"/>
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -39,7 +43,8 @@
 
         </activity>
 
-        <activity android:name=".PanaromaViewActivity">
+        <activity android:name=".PanaromaViewActivity"
+            android:screenOrientation="landscape">
 
         </activity>
 

@@ -17,8 +17,6 @@ public class preview extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.preview);
 
-        Bundle bundle = getIntent().getExtras();
-        imageFilePath = bundle.getString("camera_img");
 
         SharedPreferences preferences = getSharedPreferences("MyPrefsFile",MODE_PRIVATE);
         imageFilePath = preferences.getString("camera_img", "");

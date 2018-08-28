@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 public class CameraActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback,
         AspectRatioFragment.Listener {
@@ -102,12 +103,13 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                 case R.id.take_picture:
                     if (mCameraView != null) {
 
+                        count++;
 
-                        if(count!=Pics)
+                        if(count<=Pics)
                         {
-                            count++;
 
                             mCameraView.takePicture();
+
                         }
 
                         else {
@@ -280,7 +282,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(TAG, "onPictureTaken " + data.length);
-            Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT)
+            Toast.makeText(cameraView.getContext(), "Picture Taken: "+count, Toast.LENGTH_SHORT)
                     .show();
             final Random ran= new Random();
             final String[] path = new String[1];
@@ -419,7 +421,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
             p=new ProgressDialog(CameraActivity.this);
             p.setMessage("Stitching...");
             p.setCancelable(false);
-           // p.show();
+            p.show();
         }
 
         @Override
@@ -436,36 +438,43 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                 Toast.makeText(getApplicationContext(),"ERROR IN STITCHING",Toast.LENGTH_SHORT).show();
             }
             else
-             SaveImage(panorama);
+            {
 
+                SaveImage(panorama);
+           Intent i= new Intent(CameraActivity.this,PanaromaViewActivity.class);
+            startActivity(i);
 
-           // startActivity(i);
+            }
         }
     }
-
 
     private void SaveImage(Bitmap finalBitmap) {
 
         final Random ran= new Random();
 
-
-
-
-        String root = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES).toString();
-        File myDir = new File(root + "/saved_images");
-        myDir.mkdirs();
+        //String root = Environment.getExternalStoragePublicDirectory(
+          //      Environment.DIRECTORY_PICTURES).toString();
+        //File myDir = new File(root + "/saved_images");
+        //myDir.mkdirs();
         Random generator = new Random();
 
         int n = 10000;
         n = generator.nextInt(n);
         String fname = "Image-Test"+ n +".jpg";
-                File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+        File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                         "Test"+ran.nextInt()+".jpg");
+
+        String [] path = new String[1];
+        path[0] =file.getAbsolutePath();
+        SharedPreferences preferences = getSharedPreferences("MyPrefsFile",MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("Finalimage",path[0]);
+        editor.commit();
+
         if (file.exists ()) file.delete ();
         try {
             OutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             // sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
             //     Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
             out.flush();
@@ -484,6 +493,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                     }
                 });
     }
+
     public Bitmap stitchImages()
     {
         //return type will indicate the status about stitching
@@ -507,15 +517,29 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
             noOfImages = Integer.parseInt(name);
         }
         Bitmap imgBitmap=null;
+        Bitmap rbitmap=null;
         for(int i=0;i<noOfImages;i++) {
             String imageFilePath = p.getString("image"+(i+1), "");
             if(imageFilePath!="") {
                imgBitmap = BitmapFactory.decodeFile(imageFilePath);
+                Matrix matrix = new Matrix();
+                if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                {
+                    // Portrait Mode
+                    matrix.postRotate(90);
+                } else {
+                    // Landscape Mode
+                }
+
+
+                rbitmap = Bitmap.createBitmap(imgBitmap, 0, 0, imgBitmap.getWidth(), imgBitmap.getHeight(), matrix, true);
+
+
 ///               SaveImage(imgBitmap);
             }
 
             Mat imgMat = new Mat();
-            Utils.bitmapToMat(imgBitmap, imgMat);
+            Utils.bitmapToMat(rbitmap, imgMat);
 
             imagesList.add(imgMat);
         }

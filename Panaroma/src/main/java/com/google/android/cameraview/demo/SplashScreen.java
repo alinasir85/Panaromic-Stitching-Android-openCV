@@ -14,6 +14,10 @@ public class SplashScreen extends Activity {
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 2000;
     private static final String TAG = "permission";
+    int camPerm=0;
+    int ReadPerm=0;
+    int WritePerm=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +25,7 @@ public class SplashScreen extends Activity {
 
         isWriteStoragePermissionGranted();
         isReadStoragePermissionGranted();
+
         new Handler().postDelayed(new Runnable() {
 
             /*
@@ -39,8 +44,8 @@ public class SplashScreen extends Activity {
                 finish();
             }
         }, SPLASH_TIME_OUT);
-    }
 
+        }
     public  boolean isReadStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -79,4 +84,55 @@ public class SplashScreen extends Activity {
         }
     }
 
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (checkSelfPermission(Manifest.permission.CAMERA) ==
+                        PackageManager.PERMISSION_GRANTED){
+
+                     camPerm=1;
+                    // permission was granted
+                } else {
+                    // permission denied
+                    //Disable the functionality
+                    //that depends on this permission.
+                }
+
+
+
+                return;
+            }
+
+            case 2: {
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                        PackageManager.PERMISSION_GRANTED){
+                    ReadPerm=1;
+                    // permission was granted
+                } else {
+                    // permission denied
+                    //Disable the functionality
+                    //that depends on this permission.
+                }
+
+                return;
+            }
+
+            case 3: {
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                        PackageManager.PERMISSION_GRANTED){
+
+                    WritePerm=1;
+                    // permission was granted
+                } else {
+                    // permission denied
+                    //Disable the functionality
+                    //that depends on this permission.
+                }
+
+                return;
+            }
+
+        }
+    }
 }

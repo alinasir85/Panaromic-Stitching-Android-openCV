@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+   /* @Override
     protected void onDestroy() {
         super.onDestroy();
         try {
-            deleteAppData();
+            //deleteAppData();
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } }
 
-
+*/
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 1: {

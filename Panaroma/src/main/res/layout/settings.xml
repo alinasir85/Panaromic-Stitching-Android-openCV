@@ -34,6 +34,10 @@
         android:padding="8dp"
         android:layout_below="@id/imagetv"
         android:layout_marginTop="80dp"
+        android:width="200dp"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:fontFamily="sans-serif-smallcaps"
         android:layout_centerInParent="true"/>
 
 </RelativeLayout>

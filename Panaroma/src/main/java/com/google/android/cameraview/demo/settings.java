@@ -13,8 +13,8 @@ import android.widget.EditText;
 public class settings extends Activity {
 
     EditText et;
-    CheckBox autoBrightness;
-    boolean checked;
+   // CheckBox autoBrightness;
+    //boolean checked;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +22,7 @@ public class settings extends Activity {
 
         Button btn= (Button) findViewById(R.id.settings_btn_done);
         et= (EditText) findViewById(R.id.imagecount);
-        autoBrightness=(CheckBox)findViewById(R.id.brightness) ;
+       // autoBrightness=(CheckBox)findViewById(R.id.brightness) ;
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -31,7 +31,7 @@ public class settings extends Activity {
                 String imageCount=et.getText().toString();
                 editor.putString("ImageCount",imageCount);
 
-                if(autoBrightness.isChecked())
+            /*    if(autoBrightness.isChecked())
                 {
                     checked=true;
 
@@ -40,7 +40,7 @@ public class settings extends Activity {
                 {
                     checked=false;
                 }
-                editor.putBoolean("AutoBright",checked);
+                editor.putBoolean("AutoBright",checked);*/
 
                 editor.commit();
 

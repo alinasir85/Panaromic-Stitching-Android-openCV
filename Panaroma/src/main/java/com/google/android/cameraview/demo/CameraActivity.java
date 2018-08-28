@@ -105,7 +105,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
 
                         count++;
 
-                        if(count<=Pics)
+                        if(count<Pics)
                         {
 
                             mCameraView.takePicture();

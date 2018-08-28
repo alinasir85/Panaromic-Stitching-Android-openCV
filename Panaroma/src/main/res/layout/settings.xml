@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="10dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,32 +21,9 @@
         android:id="@+id/imagecount"
         android:layout_toRightOf="@id/imagetv"
         android:inputType="numberDecimal"
-        android:padding="8dp"
+        android:padding="10dp"
         android:textSize="20dp"/>
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Auto Brightness: "
-        android:textStyle="bold"
-        android:id="@+id/imagetv2"
-        android:padding="8dp"
-        android:layout_below="@id/imagetv"
-        android:layout_marginTop="10dp"
-        android:textSize="20dp"
-
-        />
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/brightness"
-        android:checked="false"
-        android:layout_toRightOf="@id/imagetv2"
-        android:layout_below="@+id/imagecount"
-        android:layout_marginTop="20dp"
-        android:textSize="30dp"/>
 
 
     <Button
@@ -54,7 +32,8 @@
         android:text="DONE"
         android:id="@+id/settings_btn_done"
         android:padding="8dp"
-        android:layout_below="@id/brightness"
-        android:layout_marginTop="30dp"/>
+        android:layout_below="@id/imagetv"
+        android:layout_marginTop="80dp"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

@@ -33,7 +33,6 @@ android {
         }
     }
 
-
 }
 
 dependencies {
@@ -51,4 +50,5 @@ dependencies {
     implementation 'com.android.support:support-compat:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation project(':openCVLibrary342')
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.+'
 }

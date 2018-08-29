@@ -3,11 +3,12 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     >
 
+
   <ImageView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:src="@drawable/panoramicview"
-      android:id="@+id/panaromaView"
+      android:id="@+id/panaromaView1"
       android:layout_alignParentTop="true"
       android:scaleType="fitXY"
       />
@@ -15,7 +16,15 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="Save"
-      android:layout_alignBottom="@id/panaromaView"
+      android:layout_alignBottom="@id/panaromaView1"
       android:layout_centerInParent="true"
-      android:id="@+id/resultSave"/>
+      android:id="@+id/resultSave1"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crop"
+        android:layout_alignBottom="@id/panaromaView1"
+        android:layout_toRightOf="@id/resultSave1"
+        android:id="@+id/crop1"/>
 </RelativeLayout>

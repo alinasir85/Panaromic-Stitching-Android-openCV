@@ -290,7 +290,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
                 @Override
                 public void run() {
                     File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                            "picture"+ran.nextInt()+".jpg");
+                            "picture"+ran.nextInt()+".png");
 
                     path[0] =file.getAbsolutePath();
                     SharedPreferences preferences = getSharedPreferences("MyPrefsFile",MODE_PRIVATE);
@@ -460,9 +460,9 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
 
         int n = 10000;
         n = generator.nextInt(n);
-        String fname = "Image-Test"+ n +".jpg";
+        String fname = "Image-Test"+ n +".png";
         File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                        "Test"+ran.nextInt()+".jpg");
+                        "Test"+ran.nextInt()+".png");
 
         String [] path = new String[1];
         path[0] =file.getAbsolutePath();
@@ -474,7 +474,7 @@ public class CameraActivity extends AppCompatActivity implements ActivityCompat.
         if (file.exists ()) file.delete ();
         try {
             OutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             // sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
             //     Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
             out.flush();

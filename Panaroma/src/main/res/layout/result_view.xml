@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/PanaromaLayout">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/panoramicview"
+            android:id="@+id/panaromaView"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_alignBottom="@id/panaromaView"
+            android:layout_centerInParent="true"
+            android:id="@+id/resultSave"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crop"
+            android:layout_alignBottom="@id/panaromaView"
+            android:layout_toRightOf="@id/resultSave"
+            android:id="@+id/crop"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
